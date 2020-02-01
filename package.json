@@ -23,7 +23,7 @@
   "bugs": "https://github.com/cmd430/twitch-realtime/issues",
   "dependencies": {
     "shortid": "^2.2.15",
-    "ws": "^7.3.1"
+    "ws": "^7.2.1"
   },
   "scripts": {
     "test": "eslint \"**/*.js\"",
