@@ -1,9 +1,9 @@
 {
   "name": "twitch-realtime",
-  "version": "0.6.0",
-  "main": "main.js",
+  "version": "0.7.0",
+  "main": "index.js",
   "description": "A small library to use the Twitch PubSub API",
-  "author": "Johannes Diehl <johannes@diehl.io> (https://diehl.io)",
+  "author": "Bradley 'cmd430' Treweek, (original author: Johannes Diehl)",
   "keywords": [
     "twitch",
     "realtime",
@@ -11,24 +11,23 @@
   ],
   "license": "MIT",
   "files": [
-    "main.js"
+    "index.js"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Fuechschen/twitch-realtime.git"
+    "url": "https://github.com/cmd430/twitch-realtime.git"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=11.0.0"
   },
-  "bugs": "https://github.com/Fuechschen/twitch-realtime/issues",
+  "bugs": "https://github.com/cmd430/twitch-realtime/issues",
   "dependencies": {
-    "bluebird": "^3.4.6",
-    "shortid": "^2.2.6",
-    "ws": "^2.0.2"
+    "shortid": "^2.2.15",
+    "ws": "^7.3.1"
   },
   "scripts": {
     "test": "eslint \"**/*.js\"",
-    "docs": "jsdoc main.js"
+    "docs": "jsdoc index.js"
   },
   "eslintConfig": {
     "env": {
@@ -75,7 +74,7 @@
     }
   },
   "devDependencies": {
-    "eslint": "^3.13.0",
-    "jsdoc": "^3.4.3"
+    "eslint": "^3.19.0",
+    "jsdoc": "^3.6.3"
   }
 }
