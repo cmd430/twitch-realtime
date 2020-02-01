@@ -1,7 +1,6 @@
 //noinspection SpellCheckingInspection
 let WebSocket = require('ws'),
     shortid = require('shortid'),
-    Promise = require('bluebird'),
     EventEmitter = require('events');
 
 const URL = 'wss://pubsub-edge.twitch.tv';
