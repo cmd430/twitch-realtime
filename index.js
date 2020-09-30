@@ -22,17 +22,16 @@ class TwitchRealtime extends EventEmitter {
      */
     constructor(options = { reconnect: true, defaultTopics: [], authToken: null, pingSendInterval: 150 * 1000 }) {
         super();
-        if (options.defaultTopics.length < 1)throw new Error('missing default topic');
-        this._token = options.authToken;
+        if (options.defaultTopics.length < 1) throw new Error('missing default topic');
+        this._token = options.authToken || null;
         this._autoreconnect = options.reconnect || true;
-
         this._pending = {};
         this._initial = null;
         this._tries = 0;
         this._pingInterval = null;
-        this._pingSendInterval = options.pingSendInterval;
+        this._pingSendInterval = options.pingSendInterval || 150 * 1000;
         this._pingTimeout = null;
-        this._topics = options.defaultTopics;
+        this._topics = options.defaultTopics;        
         this._connect();
 
         //expose static methods also on objects
@@ -235,7 +234,7 @@ class TwitchRealtime extends EventEmitter {
                     clearTimeout(this._pingTimeout);
                     this._pingTimeout = null;
                 }
-                else if (msg.type === 'RECONNECT') this._reconnect();
+                else if (msg.type === 'RECONNECT') this._reconnect(1000);
                 else this.emit('warn', 'Received unknown message type. Maybe this package is outdated?');
             } catch (e) {
                 /**
