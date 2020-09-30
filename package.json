@@ -1,6 +1,6 @@
 {
   "name": "twitch-realtime",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "main": "index.js",
   "description": "A small library to use the Twitch PubSub API",
   "author": "Bradley 'cmd430' Treweek, (original author: Johannes Diehl)",

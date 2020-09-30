@@ -39,35 +39,40 @@ class TwitchRealtime extends EventEmitter {
     }
 
     _connect() {
-        if (this._ws && (this._ws.readyState === WebSocket.OPEN || this._ws.readyState === WebSocket.CONNECTING))return;
+        if (this._ws && (this._ws.readyState === WebSocket.OPEN || this._ws.readyState === WebSocket.CONNECTING)) return;
         this._ws = new WebSocket(URL);
 
         this._ws.on('open', () => {
-            this._initial = shortid.generate();
-            this._ws.send(JSON.stringify({
-                type: 'LISTEN',
-                nonce: this._initial,
-                data: {topics: this._topics, auth_token: (this._token ? this._token : undefined)}
-            }));
+            if (this._ws && this._ws.readyState === WebSocket.OPEN) {
+                this._initial = shortid.generate();
+                this._ws.send(JSON.stringify({
+                    type: 'LISTEN',
+                    nonce: this._initial,
+                    data: {topics: this._topics, auth_token: (this._token ? this._token : undefined)}
+                }));
 
-            /**
-             * Fired when the connection is opened and the initial 'listen'-payload was sent.
-             * @event TwitchRealtime#connect
-             */
-            this.emit('connect');
+                /**
+                 * Fired when the connection is opened and the initial 'listen'-payload was sent.
+                 * @event TwitchRealtime#connect
+                 */
+                this.emit('connect');
+            }
         });
 
         this._ws.on('close', () => {
-            if (this._autoreconnect) {
-                setTimeout(() => {
-                    this._ws = new WebSocket(URL);
-                }, 1000 * this._tries);
-                this._tries += 1;
-            }
             clearInterval(this._pingInterval);
             clearTimeout(this._pingTimeout);
             this._pingInterval = null;
             this._pingTimeout = null;
+            this._ws = null;
+            
+            if (this._autoreconnect) {
+                setTimeout(() => {
+                    this._connect();
+                    this.emit('reconnect');
+                }, 1000 * this._tries);
+                this._tries += 1;
+            }
             /**
              * Fired when the connection to twitch was lost.
              * @event TwitchRealtime#close
@@ -251,8 +256,15 @@ class TwitchRealtime extends EventEmitter {
 
     _reconnect(timeout) {
         this._ws.terminate();
+        clearInterval(this._pingInterval);
+        clearTimeout(this._pingTimeout);
+        this._pingInterval = null;
+        this._pingTimeout = null;
+        this._ws = null;
+        
         setTimeout(() => {
             this._connect();
+            this.emit('reconnect');
         }, timeout);
     }
 
