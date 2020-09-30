@@ -18,8 +18,9 @@ class TwitchRealtime extends EventEmitter {
      * @param {Array<String>?} options.defaultTopics The first topic to listen to. This is mandatory or twitch will return an error.
      * @param {Boolean} [options.reconnect=true] Set this to false if you do not want twitch-realtime to automatically reconnect if the connection is lost.
      * @param {String} [options.authToken=null] The default authToken. This is sent for 'listen'-commands if no other token was specified.
+     * @param {Number} [options.pingSendInterval=150*1000] The default interval for sending keep alive ping.
      */
-    constructor(options = {reconnect: true, defaultTopics: [], authToken: null}) {
+    constructor(options = { reconnect: true, defaultTopics: [], authToken: null, pingSendInterval: 150 * 1000 }) {
         super();
         if (options.defaultTopics.length < 1)throw new Error('missing default topic');
         this._token = options.authToken;
@@ -29,6 +30,7 @@ class TwitchRealtime extends EventEmitter {
         this._initial = null;
         this._tries = 0;
         this._pingInterval = null;
+        this._pingSendInterval = options.pingSendInterval;
         this._pingTimeout = null;
         this._topics = options.defaultTopics;
         this._connect();
@@ -249,9 +251,9 @@ class TwitchRealtime extends EventEmitter {
         this._pingInterval = setInterval(() => {
             if (this._ws.readyState === WebSocket.OPEN) {
                 this._ws.send(JSON.stringify({type: 'PING'}));
-                this._pingTimeout = setTimeout(() => this._reconnect(1000), 15000);
+                this._pingTimeout = setTimeout(() => this._reconnect(1000), 15 * 1000);
             }
-        }, 300000);
+        }, this._pingSendInterval);
     }
 
     _reconnect(timeout) {
@@ -318,7 +320,7 @@ class TwitchRealtime extends EventEmitter {
             }));
             setTimeout(() => {
                 if (this._pending[nonce]) this._pending[nonce].reject('timeout');
-            }, 10000);
+            }, 10 * 1000);
         });
     }
 
@@ -368,7 +370,7 @@ class TwitchRealtime extends EventEmitter {
             }));
             setTimeout(() => {
                 if (this._pending[nonce]) this._pending[nonce].reject('timeout');
-            }, 10000);
+            }, 10 * 1000);
         });
     }
 
