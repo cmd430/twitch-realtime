@@ -115,7 +115,7 @@ class TwitchRealtime extends EventEmitter {
                         topic = split[0],
                         channel = split[1];
                     if (typeof msg.data.message === 'string') msg.data.message = JSON.parse(msg.data.message);
-                    if (topic === 'video-playback') {
+                    if (topic === 'video-playback' || topic === 'video-playback-by-id') {
                         if (msg.data.message.type === 'stream-up') {
                             //noinspection JSUnresolvedVariable
                             /**
